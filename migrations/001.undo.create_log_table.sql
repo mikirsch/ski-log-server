@@ -1,0 +1,1 @@
+DROP TABLE ski_logs;

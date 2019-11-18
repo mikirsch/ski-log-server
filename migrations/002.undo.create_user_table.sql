@@ -1,0 +1,3 @@
+ALTER TABLE ski_logs 
+  DROP COLUMN IF EXISTS user_id;
+DROP TABLE users;
