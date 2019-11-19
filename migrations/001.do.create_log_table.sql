@@ -3,6 +3,7 @@ CREATE TABLE ski_logs (
   date TIMESTAMP NOT NULL DEFAULT now(),
   ski_area TEXT NOT NULL,
   location TEXT NOT NULL,
+  duration INTERVAL,
   notes TEXT
 
 )

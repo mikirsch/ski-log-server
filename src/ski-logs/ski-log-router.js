@@ -1,20 +1,21 @@
 const express = require('express');
 const path = require('path');
 const SkiLogService = require('./ski-log-service');
+const { RequireAuth } = require('../middleware/jwt-auth');
 
 const skiLogRouter = express.Router();
 const jsonBodyParser = express.json();
 
 skiLogRouter
   .route('/')
-  .get((req, res, next) => {
+  .get(requireAuth, (req, res, next) => {
     const user_id = 1; //TODO: TEMPORARY UNTIL AUTH IS IN PLACE
     SkiLogService.getLogsByUserId(req.app.get('db'), user_id).then(logs =>
       res.json(SkiLogService.serializeLogs(logs))
     );
   })
-  .post(jsonBodyParser, (req, res, next) => {
-    const { date, ski_area, location, notes } = req.body;
+  .post(requireAuth, jsonBodyParser, (req, res, next) => {
+    const { date, ski_area, location, duration, notes } = req.body;
     const newLog = { date, ski_area, location }; //required
 
     for (const [k, v] of Object.entries(newLog)) {
@@ -22,10 +23,9 @@ skiLogRouter
         return res.status(400).json({ error: `Missing ${k} in request body` });
       }
     }
-    if (notes) {
-      //don't bother with null or empty string
-      newLog.notes = notes;
-    }
+
+    newLog.notes = notes ? notes : null;
+    newLog.duration = duration;
 
     newLog.user_id = 1; //TODO: TEMPORARY UNTIL AUTH IS IN PLACE
 
