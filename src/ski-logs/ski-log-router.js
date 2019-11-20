@@ -1,7 +1,8 @@
 const express = require('express');
 const path = require('path');
+// const querystring = require('querystring');
 const SkiLogService = require('./ski-log-service');
-const { RequireAuth } = require('../middleware/jwt-auth');
+const { requireAuth } = require('../middleware/jwt-auth');
 
 const skiLogRouter = express.Router();
 const jsonBodyParser = express.json();
@@ -9,17 +10,37 @@ const jsonBodyParser = express.json();
 skiLogRouter
   .route('/')
   .get(requireAuth, (req, res, next) => {
-    const user_id = 1; //TODO: TEMPORARY UNTIL AUTH IS IN PLACE
-    SkiLogService.getLogsByUserId(req.app.get('db'), user_id).then(logs =>
-      res.json(SkiLogService.serializeLogs(logs))
-    );
+    const user_id = req.user.id;
+    const query = req.query;
+    const db = req.app.get('db');
+    console.log(req.query);
+    if (query.beginDate) {
+      const begin = query.beginDate;
+      const end = query.endDate ? query.endDate : begin;
+      SkiLogService.getLogsByUserAndTimeRange(db, begin, end, user_id).then(
+        logs => {
+          if (!logs || logs.length === 0) {
+            //TODO: I think only one of these checks is needed but not sure which
+            return res
+              .status(404)
+              .json({ error: 'User has no logs within specified range' });
+          }
+          res.json(SkiLogService.serializeLogs(logs));
+        }
+      );
+    } else {
+      SkiLogService.getLogsByUserId(db, user_id).then(logs =>
+        res.json(SkiLogService.serializeLogs(logs))
+      );
+    }
   })
   .post(requireAuth, jsonBodyParser, (req, res, next) => {
     const { date, ski_area, location, duration, notes } = req.body;
     const newLog = { date, ski_area, location }; //required
 
     for (const [k, v] of Object.entries(newLog)) {
-      if (v == null) {
+      if (!v) {
+        //null or otherwise falsy (e.g. empty string)
         return res.status(400).json({ error: `Missing ${k} in request body` });
       }
     }
@@ -27,7 +48,7 @@ skiLogRouter
     newLog.notes = notes ? notes : null;
     newLog.duration = duration;
 
-    newLog.user_id = 1; //TODO: TEMPORARY UNTIL AUTH IS IN PLACE
+    newLog.user_id = req.user.id;
 
     SkiLogService.addLog(req.app.get('db'), newLog)
       .then(log =>
@@ -38,5 +59,19 @@ skiLogRouter
       )
       .catch(next);
   });
+
+skiLogRouter.route('/:id').get(requireAuth, (req, res, next) => {
+  SkiLogService.getLogById(db, req.params.id).then(log => {
+    if (!log) {
+      return res.status(404).json({ error: 'Log not found' });
+    } else if (log.user_id !== user_id) {
+      return res
+        .status(401)
+        .json({ error: 'Log does not belong to current user' });
+    }
+    res.json(SkiLogService.serializeSingleLog(log));
+  });
+});
+``;
 
 module.exports = skiLogRouter;

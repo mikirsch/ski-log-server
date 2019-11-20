@@ -1,7 +1,7 @@
 const xss = require('xss');
 
 const SkiLogService = {
-  getByLogId(db, id) {
+  getLogById(db, id) {
     return db('ski_logs')
       .select('*')
       .where('id', id)
@@ -11,6 +11,12 @@ const SkiLogService = {
     return db('ski_logs')
       .select('*')
       .where('user_id', id);
+  },
+  getLogsByUserAndTimeRange(db, begin, end, user_id) {
+    return db('ski_logs')
+      .select('*')
+      .whereBetween('date', [begin, end])
+      .where('user_id', user_id);
   },
   addLog(db, log) {
     return db('ski_logs')
