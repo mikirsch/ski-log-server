@@ -24,13 +24,21 @@ const SkiLogService = {
       .returning('*');
   },
   serializeSingleLog(log) {
-    return {
-      id: log.id,
-      date: log.date,
-      ski_area: xss(log.ski_area),
-      location: xss(log.location),
-      notes: log.notes ? xss(log.notes) : null
-    };
+    const sanitized = { ...log };
+    const riskyKeys = ['ski_area', 'location', 'notes'];
+    for (let key in riskyKeys) {
+      sanitized[key] = xss(sanitized[key]);
+    }
+    return sanitized;
+    // return {
+    //   id: log.id,
+    //   date: log.date,
+    //   ski_area: xss(log.ski_area),
+    //   location: xss(log.location),
+    //   notes: log.notes ? xss(log.notes) : null,
+    //   duration: log.duration
+    //   vert: log.vert
+    // };
   },
   serializeLogs(logs) {
     return logs.map(SkiLogService.serializeSingleLog);

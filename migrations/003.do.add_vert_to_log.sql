@@ -1,0 +1,2 @@
+ALTER TABLE ski_logs
+  ADD COLUMN vert INTEGER;

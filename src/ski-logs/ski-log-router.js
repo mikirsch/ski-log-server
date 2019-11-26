@@ -14,6 +14,7 @@ skiLogRouter
     const query = req.query;
     const db = req.app.get('db');
     console.log(req.query);
+
     if (query.beginDate) {
       const begin = query.beginDate;
       const end = query.endDate ? query.endDate : begin;
@@ -35,8 +36,9 @@ skiLogRouter
     }
   })
   .post(requireAuth, jsonBodyParser, (req, res, next) => {
-    const { date, ski_area, location, duration, notes } = req.body;
+    const { date, ski_area, location, duration, notes, vert } = req.body;
     const newLog = { date, ski_area, location }; //required
+    console.log(req);
 
     for (const [k, v] of Object.entries(newLog)) {
       if (!v) {
@@ -47,6 +49,7 @@ skiLogRouter
 
     newLog.notes = notes ? notes : null;
     newLog.duration = duration;
+    newLog.vert = vert;
 
     newLog.user_id = req.user.id;
 

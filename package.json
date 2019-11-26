@@ -24,6 +24,7 @@
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.20.2",
     "morgan": "^1.9.1",
+    "postgrator-cli": "^3.3.0",
     "pg": "^7.12.1",
     "xss": "^1.0.6"
   },
@@ -31,7 +32,6 @@
     "chai": "^4.2.0",
     "mocha": "^6.2.2",
     "nodemon": "^1.19.4",
-    "postgrator-cli": "^3.3.0",
     "superagent": "^5.1.0",
     "supertest": "^4.0.2"
   }

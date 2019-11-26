@@ -1,0 +1,2 @@
+ALTER TABLE ski_logs
+  DROP COLUMN IF EXISTS vert;
