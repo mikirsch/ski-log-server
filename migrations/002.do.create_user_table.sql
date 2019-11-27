@@ -12,4 +12,6 @@ CREATE TABLE users (
 ALTER TABLE ski_logs
   ADD COLUMN
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE;
-    
+
+INSERT INTO users (user_name, password)
+  VALUES ('demo', '$2a$04$EbrSWa268.YeCq.cerwlVOfcP0WGcRtaWEljDpwprLpcyso9md0R2')
