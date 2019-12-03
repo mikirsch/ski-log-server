@@ -21,10 +21,7 @@ skiLogRouter
       SkiLogService.getLogsByUserAndTimeRange(db, begin, end, user_id).then(
         logs => {
           if (!logs || logs.length === 0) {
-            //TODO: I think only one of these checks is needed but not sure which
-            return res
-              .status(404)
-              .json({ error: 'User has no logs within specified range' });
+            return res.status(200).json({ logs: [] });
           }
           res.json(SkiLogService.serializeLogs(logs));
         }
