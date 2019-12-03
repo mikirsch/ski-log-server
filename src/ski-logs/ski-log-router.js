@@ -13,7 +13,6 @@ skiLogRouter
     const user_id = req.user.id;
     const query = req.query;
     const db = req.app.get('db');
-    console.log(req.query);
 
     if (query.beginDate) {
       const begin = query.beginDate;
@@ -58,19 +57,5 @@ skiLogRouter
       )
       .catch(next);
   });
-
-skiLogRouter.route('/:id').get(requireAuth, (req, res, next) => {
-  SkiLogService.getLogById(db, req.params.id).then(log => {
-    if (!log) {
-      return res.status(404).json({ error: 'Log not found' });
-    } else if (log.user_id !== user_id) {
-      return res
-        .status(401)
-        .json({ error: 'Log does not belong to current user' });
-    }
-    res.json(SkiLogService.serializeSingleLog(log));
-  });
-});
-``;
 
 module.exports = skiLogRouter;
