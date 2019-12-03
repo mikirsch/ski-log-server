@@ -36,9 +36,8 @@ skiLogRouter
     }
   })
   .post(requireAuth, jsonBodyParser, (req, res, next) => {
-    const { date, ski_area, location, duration, notes, vert } = req.body;
-    const newLog = { date, ski_area, location }; //required
-    console.log(req);
+    const { date, ski_area, duration, notes, vert } = req.body;
+    const newLog = { date, ski_area }; //required
 
     for (const [k, v] of Object.entries(newLog)) {
       if (!v) {

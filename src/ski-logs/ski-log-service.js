@@ -25,7 +25,7 @@ const SkiLogService = {
   },
   serializeSingleLog(log) {
     const sanitized = { ...log };
-    const riskyKeys = ['ski_area', 'location', 'notes'];
+    const riskyKeys = ['ski_area', 'notes'];
     for (let key in riskyKeys) {
       sanitized[key] = xss(sanitized[key]);
     }
