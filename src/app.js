@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const { NODE_ENV } = require('./config');
 const skiLogRouter = require('./ski-logs/ski-log-router');
 const authRouter = require('./auth/auth-router');
+const signupRouter = require('./auth/signup-router');
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/logs', skiLogRouter);
 app.use('/api/login', authRouter);
+app.use('/api/signup', signupRouter);
 
 app.use(function errorHandler(error, req, res, next) {
   let response;

@@ -26,6 +26,14 @@ const AuthService = {
     return jwt.verify(token, config.JWT_SECRET, {
       algorithms: ['HS256']
     });
+  },
+  async addUser(db, user_name, password) {
+    let salt = await bcrypt.genSalt(12);
+    let hash = await bcrypt.hash(password, salt);
+    return db('users')
+      .insert({ user_name, password: hash })
+      .returning('*')
+      .then(rows => rows[0]);
   }
 };
 
