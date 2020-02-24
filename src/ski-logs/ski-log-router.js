@@ -1,6 +1,5 @@
 const express = require('express');
 const path = require('path');
-// const querystring = require('querystring');
 const SkiLogService = require('./ski-log-service');
 const { requireAuth } = require('../middleware/jwt-auth');
 

@@ -21,24 +21,16 @@ const SkiLogService = {
   addLog(db, log) {
     return db('ski_logs')
       .insert(log)
-      .returning('*');
+      .returning('*')
+      .then(rows => rows[0]);
   },
   serializeSingleLog(log) {
     const sanitized = { ...log };
     const riskyKeys = ['ski_area', 'notes'];
-    for (let key in riskyKeys) {
+    for (let key of riskyKeys) {
       sanitized[key] = xss(sanitized[key]);
     }
     return sanitized;
-    // return {
-    //   id: log.id,
-    //   date: log.date,
-    //   ski_area: xss(log.ski_area),
-    //   location: xss(log.location),
-    //   notes: log.notes ? xss(log.notes) : null,
-    //   duration: log.duration
-    //   vert: log.vert
-    // };
   },
   serializeLogs(logs) {
     return logs.map(SkiLogService.serializeSingleLog);

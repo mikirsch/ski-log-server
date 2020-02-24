@@ -25,7 +25,9 @@ signupRouter.post('/', jsonBodyParser, (req, res, next) => {
         .then(response => {
           const sub = response.user_name;
           const payload = { user_id: response.id };
-          res.send({ authToken: AuthService.createJwt(sub, payload) });
+          res
+            .status(201)
+            .send({ authToken: AuthService.createJwt(sub, payload) });
         })
         .catch(err => console.log(err));
     })
